@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <head><meta http-equiv="Content-Type" content="text/plain; charset=utf-8"/></head>
+    <link rel="stylesheet" href="/static/dashboard.css" /> <!-- link to the css file -->
+    <title>Dashboard</title>
+  </head>
+  <div class="body">
+
+    
+    <!-- this div BELOW is for inputting stuff to be written to serial
+    // HEY YOU
+    //
+    //
+    //
+    //
+    //
+    // MAKE IT SO THAT WHEN USERS ARE ALLOWED TO FREELY INPUT STUFF INTO ARDUINO, THEY CANT INPUT /n /r OR /x or really anything with a backslash probably!!!
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    fgsdfg
+    
+    sdfgf
+    sdfg
+    sdfg
+    gsdff
+    gsdf
+    gfsdf
+    gsd
+    gfsd
+    fgsd
+    fgdf
+    gsdf
+    
+    -->
+    <div class="topL">
+    </div>
+
+
+    <!-- this div is for the username and the wasd input (user must be focused on the image to do wasd input) -->
+    <div class="topR">
+      <!-- display greeting message with current username -->
+      <h1>Welcome!!!!!!!!!!!!!!!!!!!!!</h1>
+      <!-- wasd input image, tabindex allows for it to be focused on -->
+      <img id="wasdInputImage" src="/static/images/wasdElement.png" tabindex="0">
+      <script>
+        let keyPressedDown = false; // initializes boolean to check if a key is pressed down
+        let prevFocused = false; //initializes boolean to check if the wasd element was focused in the last animation frame
+        function checkFocus() { // run the function on every animation frame (recursively)
+			    requestAnimationFrame(checkFocus);
+			    if (document.activeElement === document.getElementById("wasdInputImage")) { // if the element is focused
+            let prevFocused = true; 
+            document.getElementById("wasdInputImage").addEventListener("keydown", function(event) { // run event listeners for keydown and keyup
+              if (!keyPressedDown) {
+                keyPressedDown = true; // set boolean to true to prevent multiple keydown events
+                console.log(event.key + " pressed");
+                if (event.key === "w") {
+                  fetch("write?content=w");
+                } else if (event.key === "s") {
+                  fetch("write?content=s");
+                } else if (event.key === "a") {
+                  fetch("write?content=a");
+                } else if (event.key === "d") {
+                  fetch("write?content=d");
+                }
+              }
+            });
+            document.getElementById("wasdInputImage").addEventListener("keyup", function(event) {
+              if (keyPressedDown) {
+                keyPressedDown = false; // set boolean to false to allow for keydown events again
+                console.log(event.key + " released");
+                fetch("write?content=q");
+              }
+            });
+          }
+          else if (prevFocused) { // makes it so when the element is no longer in focus it will stop the robot
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            // OK SO
+            // YEA BASICALLY WHY THE FUCK DOES THE BOT NOT STOP WHEN I STOP FOCUSING THE WASD ELEMENT
+            // ITS SUPPOSED TO
+            // FIGURE THAT SHIT OUT FUTURE ME!!!
+            //
+            //
+            //
+            //
+            //
+            //
+            fetch("write?content=q"); //stop robot
+            let prevFocused = false; // changes it back to false
+          }
+		    }
+        checkFocus(); // start the function on page load to being checking for focus every animation frame
+      </script>
+    </div>
+
+
+    <!-- this entire div is just the buttons and its pretty intuitive -->
+    <div class="downL">
+      <button onclick="forward()">Forward</button>
+      <script>
+        function forward() {
+          fetch("write?content=w")
+        }
+      </script>
+
+      <button onclick="backward()">Backward</button>
+      <script>
+        function backward() {
+          fetch("write?content=s")
+        }
+      </script>
+
+      <button onclick="left()">Left</button>
+      <script>
+        function left() {
+          fetch("write?content=a")
+        }
+      </script>
+
+      <button onclick="right()">Right</button>
+      <script>
+        function right() {
+          fetch("write?content=d")
+        }
+      </script>
+
+      <button onclick="stop()">Stop</button>
+      <script>
+        function stop() {
+          fetch("write?content=q")
+        }
+      </script>
+    </div>
+
+
+    <div class="downR">
+      <div id="log"></div>
+      <script>
+          var logDiv = document.getElementById('log'); // refers to the div element that was created above the script tag
+          var logEventSource = new EventSource('/log'); // refers to the route that we created in the server for server sent events (sses)
+          logEventSource.onmessage = function(event) { // listens to the message event using the onmessage attribute of the EventSource object
+              var data = event.data.trim(); // trims the data to remove any whitespace
+              if (data !== '') { // checks if the data is not empty
+                logDiv.innerHTML += data + '<br>'; // adds the new data to the div element with a line break (br because the text is being displayed in an html element)
+                var lineList = logDiv.innerHTML.split('<br>'); // splits the data in the html element into a list of lines
+                logDiv.innerHTML = lineList.slice(-24).join('<br>'); // slices the list to only have the last 23 lines and then joins them back together with line breaks
+              }
+          };
+      </script>
+    </div>
+  </div>
+</html>
