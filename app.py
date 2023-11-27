@@ -41,9 +41,9 @@ def readLoop(): #this function will run in the bg forever
         if curByte == "\\r": #/r signals the end of a line
             mBot.read() #/n appears after every /r so read it to just get it out of the way since its useless
             if line.rfind("\\x") == -1:
-                logToFile(time.strftime("%H:%M:%S", time.localtime()) + " | \"" + line + "\"\n") #writes the newly read line of text to the file, allowing the user to view it on the webpage once it updates (also gets rid of the junk that gets sent at the start using the .find)
+                logToFile(line + "\n") #writes the newly read line of text to the file, allowing the user to view it on the webpage once it updates (also gets rid of the junk that gets sent at the start using the .find)
             else:
-                logToFile(time.strftime("%H:%M:%S", time.localtime()) + " | \"" + line[line.rfind("\\x") + 4:] + "\"\n") #does the same as the line above but gets rid of the junk that gets sent at the start using the .find if the junk is found
+                logToFile(line[line.rfind("\\x") + 4:] + "\n") #does the same as the line above but gets rid of the junk that gets sent at the start using the .find if the junk is found
             line = "" #reset line back to nothing
         else:
             line += curByte #also keep in mind that this will not allow the message to show to the user until the full message is passed. this is necessary since the log file reader only updates the newest line when a new line is added (probably could work around for more read time updating but who cares)
@@ -91,6 +91,7 @@ def dashboard():
 def write():
     writeContents = request.args.get('content', default = "q") #gets the query passed by the user for what they wanna write through serial
     mBot.write(bytearray(writeContents, "ascii")) #actually writes the bytes of the passed string to serial
+    #add something that will prevent writes including back slashes since that would probably interfere with the arduino side program
     return "<p>write</p>"
 
 

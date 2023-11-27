@@ -52,25 +52,31 @@
       <script>
         let keyPressedDown = false; // initializes boolean to check if a key is pressed down
         let prevFocused = false; //initializes boolean to check if the wasd element was focused in the last animation frame
+        const movementKeys = ["w","a","s","d"]; // to check if the key pressed is a relevant one
         function checkFocus() { // run the function on every animation frame (recursively)
 			    requestAnimationFrame(checkFocus);
 			    if (document.activeElement === document.getElementById("wasdInputImage")) { // if the element is focused
-            let prevFocused = true; 
             document.getElementById("wasdInputImage").addEventListener("keydown", function(event) { // run event listeners for keydown and keyup
-              if (!keyPressedDown) {
-                keyPressedDown = true; // set boolean to true to prevent multiple keydown events
-                console.log(event.key + " pressed");
-                if (event.key === "w") {
-                  fetch("write?content=w");
-                } else if (event.key === "s") {
-                  fetch("write?content=s");
-                } else if (event.key === "a") {
-                  fetch("write?content=a");
-                } else if (event.key === "d") {
-                  fetch("write?content=d");
+              if (movementKeys.includes(event.key)) {
+                if (!keyPressedDown) {
+                  prevFocused = true;
+                  keyPressedDown = true; // set boolean to true to prevent multiple keydown events
+                  console.log(event.key + " pressed");
+                  if (event.key === "w") {
+                    fetch("write?content=w");
+                  }
+                  else if (event.key === "s") {
+                    fetch("write?content=s");
+                  }
+                  else if (event.key === "a") {
+                    fetch("write?content=a");
+                  }
+                  else if (event.key === "d") {
+                    fetch("write?content=d");
+                  }
                 }
               }
-            });
+            }); //end of event that happens when the element is selected
             document.getElementById("wasdInputImage").addEventListener("keyup", function(event) {
               if (keyPressedDown) {
                 keyPressedDown = false; // set boolean to false to allow for keydown events again
@@ -80,25 +86,8 @@
             });
           }
           else if (prevFocused) { // makes it so when the element is no longer in focus it will stop the robot
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            // OK SO
-            // YEA BASICALLY WHY THE FUCK DOES THE BOT NOT STOP WHEN I STOP FOCUSING THE WASD ELEMENT
-            // ITS SUPPOSED TO
-            // FIGURE THAT SHIT OUT FUTURE ME!!!
-            //
-            //
-            //
-            //
-            //
-            //
             fetch("write?content=q"); //stop robot
-            let prevFocused = false; // changes it back to false
+            prevFocused = false; // changes it back to false
           }
 		    }
         checkFocus(); // start the function on page load to being checking for focus every animation frame
